@@ -85,15 +85,16 @@ public class NearestLiftDispatcherServiceImpl implements LiftDispatcherService {
       if (newFs > fs) {
         fs = newFs;
         selectedLift = lift;
-        LiftState state = null;
-        if (isGoingUp(req.getSource(), req.getDestination())) {
-          state = LiftState.GOING_UP;
-        } else {
-          state = LiftState.GOING_DOWN;
-        }
-        selectedLift.setLiftState(state);
+
       }
     }
+    LiftState state = null;
+    if (isGoingUp(req.getSource(), req.getDestination())) {
+      state = LiftState.GOING_UP;
+    } else {
+      state = LiftState.GOING_DOWN;
+    }
+    selectedLift.setLiftState(state);
 
     return selectedLift;
   }

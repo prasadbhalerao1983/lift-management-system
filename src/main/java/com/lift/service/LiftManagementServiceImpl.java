@@ -41,6 +41,9 @@ public class LiftManagementServiceImpl implements LiftManagementService {
   public Map<Integer, List<LiftStateOutput>> createLiftTravelTimeline(int buildingId,
       List<LiftCallRequest> travelRequests) {
 
+    final Building building = buildingsPerId.get(buildingId);
+    validateRequest(travelRequests, building);
+
     final Map<Integer, Lift> liftPerLiftId = getLiftsWithEnqueuedReq(buildingId, travelRequests);
 
     //Key liftId, Value: list of lift state (lift timeline)
@@ -75,6 +78,15 @@ public class LiftManagementServiceImpl implements LiftManagementService {
     return liftTimeLinePerLiftId;
 
 
+  }
+
+  private void validateRequest(List<LiftCallRequest> travelRequests, Building building) {
+    for (LiftCallRequest req : travelRequests) {
+      if ((req.getSource() < 0 && req.getSource() > building.getNumOfFloors()) && (req.getDestination() < 0
+          && req.getDestination() > building.getNumOfFloors())){
+        throw new IllegalArgumentException("Invalid floor numbers");
+      }
+    }
   }
 
   private void updateTimeLineForUnselectedLifts(int buildingId,
