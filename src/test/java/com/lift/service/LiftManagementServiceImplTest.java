@@ -5,6 +5,7 @@ import com.lift.util.LiftMgmtUtil;
 import com.lift.vo.LiftCallRequest;
 import com.lift.vo.LiftStateOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +97,45 @@ public class LiftManagementServiceImplTest {
     }
 
     LiftMgmtUtil.printLiftTimeLine(timeLinePerLift, numOfLifts);
+  }
+
+
+  //CASE: 4 lifts state is changed, its not initialized to ground floor anymore.
+  // Now request is made to come down from 6th floor to 0th floor.
+  public void testTravel4() {
+
+    LiftManagementServiceImpl service = new LiftManagementServiceImpl();
+    final int numOfLifts = 3;
+    service.initBuildingLifts(1, 10, numOfLifts);
+
+    final List<LiftCallRequest> list = getLiftRequestsForTestTravel3();
+
+    final Map<Integer, List<LiftStateOutput>> timeLinePerLift = service.createLiftTravelTimeline(1, list);
+
+    final Map<Integer, List<LiftStateOutput>> expectedTimeLine = getExpectedResultForTestTravel3();
+
+    Assert.assertTrue(timeLinePerLift.containsKey(1));
+    Assert.assertTrue(timeLinePerLift.containsKey(2));
+
+    final List<LiftStateOutput> actualLift1Timline = timeLinePerLift.get(1);
+    final List<LiftStateOutput> actualLift2Timline = timeLinePerLift.get(2);
+
+    final List<LiftStateOutput> expectedLift1Timline = expectedTimeLine.get(1);
+    final List<LiftStateOutput> expectedLift2Timline = expectedTimeLine.get(2);
+
+    for (int ctr = 0; ctr < expectedLift1Timline.size(); ctr++) {
+      Assert.assertEquals(expectedLift1Timline.get(ctr), actualLift1Timline.get(ctr));
+      Assert.assertEquals(expectedLift2Timline.get(ctr), actualLift2Timline.get(ctr));
+    }
+
+    LiftMgmtUtil.printLiftTimeLine(timeLinePerLift, numOfLifts);
+
+    System.out.println("------------------------------------------------------");
+    System.out.println("------------------------------------------------------");
+
+    final Map<Integer, List<LiftStateOutput>> timeLinePerLift1 = service
+        .createLiftTravelTimeline(1, Arrays.asList(new LiftCallRequest(0, 6, 0)));
+    LiftMgmtUtil.printLiftTimeLine(timeLinePerLift1, numOfLifts);
   }
 
   private void printTravelTrace(List<LiftStateOutput> timeLine) {
