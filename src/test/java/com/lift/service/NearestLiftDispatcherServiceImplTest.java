@@ -40,9 +40,7 @@ public class NearestLiftDispatcherServiceImplTest extends TestCase {
     final Lift nearestLift5 = service.getNearestLift(buildingId, req5);
     Assert.assertEquals("Nearest Lift",1,nearestLift5.getLiftId());
 
-    LiftCallRequest req6 = new LiftCallRequest(0,2,1);
-    final Lift nearestLift6 = service.getNearestLift(buildingId, req6);
-    Assert.assertEquals("Nearest Lift",2,nearestLift6.getLiftId());
+
 
   }
 }
